@@ -1,18 +1,9 @@
 use axum::{Json, Router, http::StatusCode, response::IntoResponse, routing::get};
-use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
-struct CreateContact {
-    name: String,
-    email: String,
-    message: String,
-    interest: String,
-}
+use crate::models::contact::CreateContact;
+use crate::models::response::ResponseBody;
 
-#[derive(Serialize)]
-struct ResponseBody {
-    message: String,
-}
+pub mod models;
 
 #[tokio::main]
 async fn main() {
