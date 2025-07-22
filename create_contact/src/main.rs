@@ -1,8 +1,8 @@
-use axum::{Json, Router, http::StatusCode, response::IntoResponse, routing::get};
+use axum::{Router, routing::get};
 
-use crate::models::contact::CreateContact;
-use crate::models::response::ResponseBody;
+use crate::controllers::contact_controller::{create_contact, get_contacts};
 
+pub mod controllers;
 pub mod models;
 
 #[tokio::main]
@@ -12,32 +12,4 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
-}
-
-async fn get_contacts() -> Json<ResponseBody> {
-    println!("get_contacts - start");
-    let response_body = ResponseBody {
-        message: "List of contacts".to_string(),
-    };
-
-    println!("get_contacts - end");
-    Json(response_body)
-}
-
-async fn create_contact(Json(payload): Json<CreateContact>) -> impl IntoResponse {
-    println!(
-        "create_contact - start - body = [name = {}, email = {}, message = {}, interest = {}]",
-        payload.name, payload.email, payload.message, payload.interest
-    );
-
-    let contact_name = payload.name;
-    let response_body = ResponseBody {
-        message: format!(
-            "Thank {}, for getting in touch and sharing your interests. We look forward to hearing from you soon.",
-            contact_name
-        ),
-    };
-
-    println!("create_contact - end");
-    (StatusCode::CREATED, Json(response_body))
 }
